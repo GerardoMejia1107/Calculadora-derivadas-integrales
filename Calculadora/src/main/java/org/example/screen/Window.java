@@ -12,6 +12,8 @@ import java.awt.*;
 /** Ventana principal: toma los dos números, valida y delega el cálculo a Prolog. */
 public class Window extends JFrame {
 
+    private static final String NUMERO = "-?\d+(\.\d+)?";
+
     private final TextField txtA = new TextField("Ej: 8");
     private final TextField txtB = new TextField("Ej: 2.5");
     private final PanelResult panelResultado = new PanelResult();
@@ -92,10 +94,16 @@ public class Window extends JFrame {
             mostrar("", "Escribí los dos números", Theme.AMBER);
             return;
         }
+        if (!a.matches(NUMERO) || !b.matches(NUMERO)) {
+            mostrar("", "Solo se aceptan números (ej: 8, 2.5, -3)", Theme.RED);
+            return;
+        }
         try {
             String resultado = motor.consultar(predicado, a, b);
             if (resultado != null) {
                 mostrar(resultado, "Listo", Theme.GREEN);
+            } else if (predicado.equals("division")) {
+                mostrar("", "No se puede dividir entre cero.", Theme.RED);
             } else {
                 mostrar("", "Sin solución", Theme.AMBER);
             }
